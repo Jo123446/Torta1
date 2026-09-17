@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تورتة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3E2A28;
+    --ink-dim:#8C6F68;
+    --bg:#FFF6F1;
+    --bg-raised:#FFFFFF;
+    --pink:#E8517E;
+    --pink-soft:#FBD7E3;
+    --gold:#F0B429;
+    --line: rgba(62,42,40,0.10);
+    --radius: 6px;
+    --shadow: 0 10px 26px rgba(62,42,40,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(900px 500px at 90% -8%, rgba(232,81,126,0.08), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:'Fraunces', serif; font-weight:600;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:30;
+    background:rgba(255,246,241,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; max-width:1180px; margin:0 auto;
+  }
+  .brand{font-size:26px; color:var(--pink); display:flex; align-items:center; gap:10px;}
+  .brand svg{width:24px;height:24px;}
+  .add-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 22px; border-radius:999px; border:none;
+    background:var(--pink); color:#fff; font-size:14px; font-weight:600;
+    cursor:pointer; transition:transform .18s ease, background .2s ease;
+  }
+  .add-btn:hover{transform:translateY(-2px); background:#D93E6C;}
+  .add-btn svg{width:16px;height:16px;}
+  .add-btn{display:none;} /* يظهر فقط لصاحب الموقع عبر الرابط الخاص - شوف الكود تحت */
+  .add-btn.owner-visible{display:inline-flex;}
+
+  /* ---------- mini hero (visual only, no copy) ---------- */
+  .hero{
+    padding:56px 0 40px;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    gap:18px;
+  }
+  .hero svg{width:120px; height:120px;}
+  .hero h1{font-size:clamp(30px,4vw,40px); margin:0; color:var(--ink);}
+
+  /* ---------- gallery ---------- */
+  section{padding:20px 0 70px;}
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:22px;
+  }
+  .cake{
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--bg-raised);
+    box-shadow:var(--shadow);
+  }
+  .cake-media{
+    aspect-ratio:1/1;
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    background: repeating-linear-gradient(135deg, var(--pink-soft) 0 2px, transparent 2px 22px);
+  }
+  .cake-media img{width:100%; height:100%; object-fit:cover;}
+  .cake-media .ph-icon{width:32%; color:var(--pink); opacity:0.6;}
+  .cake-del{
+    position:absolute; top:10px; left:10px;
+    width:28px; height:28px; border-radius:50%; border:none;
+    background:rgba(255,255,255,0.92); color:var(--pink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.12);
+    z-index:2;
+  }
+  .cake-del svg{width:14px;height:14px;}
+
+  .empty-note{
+    grid-column:1/-1; text-align:center; color:var(--ink-dim);
+    padding:50px 20px; border:1px dashed var(--line); border-radius:var(--radius);
+    font-size:15px;
+  }
+
+  /* ---------- add modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(62,42,40,0.35);
+    display:none; align-items:center; justify-content:center; z-index:50;
+    padding:20px;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:#fff; border-radius:14px; padding:30px;
+    width:100%; max-width:380px;
+    box-shadow:0 30px 60px rgba(62,42,40,0.25);
+  }
+  .modal h2{font-size:22px; margin:0 0 20px; color:var(--ink);}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:13px; font-weight:600; color:var(--ink-dim); margin-bottom:6px;}
+  .field input[type=text]{
+    width:100%; padding:11px 14px; border-radius:10px; border:1.5px solid var(--line);
+    font-family:inherit; font-size:15px; background:var(--bg);
+  }
+  .field input[type=text]:focus{outline:none; border-color:var(--pink);}
+  .file-drop{
+    border:1.5px dashed var(--pink-soft); border-radius:10px;
+    padding:22px; text-align:center; cursor:pointer; position:relative;
+    background:var(--bg); transition:border-color .2s ease;
+  }
+  .file-drop:hover{border-color:var(--pink);}
+  .file-drop input{position:absolute; inset:0; opacity:0; cursor:pointer;}
+  .file-drop span{font-size:13px; color:var(--ink-dim);}
+  .file-preview{width:100%; aspect-ratio:1/1; border-radius:10px; overflow:hidden; margin-bottom:16px; display:none;}
+  .file-preview img{width:100%; height:100%; object-fit:cover;}
+  .modal-actions{display:flex; gap:10px; margin-top:22px;}
+  .modal-actions button{
+    flex:1; padding:12px; border-radius:999px; border:none; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .btn-cancel{background:var(--bg); color:var(--ink-dim);}
+  .btn-save{background:var(--pink); color:#fff;}
+  .btn-save:disabled{opacity:0.5; cursor:not-allowed;}
+
+  @media (max-width:860px){
+    .gallery{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v3"/><path d="M4 21v-7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v7"/><path d="M4 21h16"/><path d="M4 17c1 1 2 1 3 0s2-1 3 0 2 1 3 0 2-1 3 0 2 1 3 0"/></svg>
+      تورتة
+    </div>
+    <button class="add-btn" id="openAdd">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      إضافة صورة
+    </button>
+  </nav>
+</header>
+
+<div class="hero wrap">
+  <svg viewBox="0 0 100 100" fill="none">
+    <path d="M50 12c-6 6-6 12 0 12s6-6 0-12Z" fill="var(--gold)"/>
+    <rect x="18" y="30" width="64" height="16" rx="3" fill="var(--pink-soft)" stroke="var(--pink)" stroke-width="2"/>
+    <path d="M18 46 L18 78 Q18 84 24 84 L76 84 Q82 84 82 78 L82 46" fill="#FFFFFF" stroke="var(--pink)" stroke-width="2"/>
+    <path d="M18 62 Q30 56 42 62 T66 62 T82 62" stroke="var(--pink)" stroke-width="2" fill="none"/>
+    <circle cx="30" cy="38" r="2.4" fill="var(--pink)"/>
+    <circle cx="50" cy="38" r="2.4" fill="var(--gold)"/>
+    <circle cx="70" cy="38" r="2.4" fill="var(--pink)"/>
+  </svg>
+  <h1>تورتة</h1>
+</div>
+
+<section class="wrap">
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>إضافة تورتة</h2>
+    <div class="file-preview" id="filePreview"><img id="previewImg" alt=""></div>
+    <div class="file-drop" id="fileDrop">
+      <span id="dropLabel">دوس هنا أو اسحب صورة التورتة</span>
+      <input type="file" accept="image/*" id="fileInput">
+    </div>
+    <div class="field" style="margin-top:16px;">
+      <label for="cakeName">اسم التورتة</label>
+      <input type="text" id="cakeName" placeholder="مثلاً: تورتة الشوكولاتة">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelAdd">إلغاء</button>
+      <button class="btn-save" id="saveAdd" disabled>حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // أطباق افتراضية جاهزة (فاضية دلوقتي - هتتملى بصورك الحقيقية أول ما تبعتها)
+  const defaultCakes = [];
+
+  // ============================================================
+  // رابط صاحب الموقع - غيّريه لأي كلمة سر تفضّليها (رابط خاص بيكي فقط)
+  // ============================================================
+  const OWNER_KEY = 'torta-owner-9214';
+  let isOwner = false;
+  if (window.location.hash === '#' + OWNER_KEY){
+    isOwner = true;
+    // يحفظ الإذن في المتصفح ده عشان يفضل شغال حتى لو الرابط اتغيّر بعدين
+    try { localStorage.setItem('torta-owner-verified', '1'); } catch(e){}
+  } else {
+    try { isOwner = localStorage.getItem('torta-owner-verified') === '1'; }
+    catch(e){}
+  }
+  if (isOwner) document.getElementById('openAdd').classList.add('owner-visible');
+
+  const STORAGE_KEY = 'torta-cakes-v1';
+  const HIDDEN_KEY = 'torta-hidden-defaults-v1';
+  function loadLocalCakes(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveLocalCakes(list){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    catch(e){ /* storage full or unavailable - fail silently */ }
+  }
+  function loadHiddenDefaults(){
+    try { return JSON.parse(localStorage.getItem(HIDDEN_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveHiddenDefaults(list){
+    try { localStorage.setItem(HIDDEN_KEY, JSON.stringify(list)); }
+    catch(e){}
+  }
+
+  let localCakes = loadLocalCakes();
+  let hiddenDefaults = loadHiddenDefaults();
+
+  function placeholderIcon(){
+    return `<svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+      <path d="M12 2v3"/><path d="M4 21v-7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v7"/><path d="M4 21h16"/>
+    </svg>`;
+  }
+
+  function render(){
+    const grid = document.getElementById('gallery');
+    const visibleDefaults = defaultCakes
+      .map((c, i) => ({ ...c, defaultIndex: i }))
+      .filter(c => !hiddenDefaults.includes(c.defaultIndex));
+    const all = [...visibleDefaults, ...localCakes.map((c, i) => ({ ...c, localIndex: i }))];
+
+    if (all.length === 0){
+      grid.innerHTML = `<div class="empty-note">دوس "إضافة صورة" فوق وحط أول تورتة.</div>`;
+      return;
+    }
+
+    grid.innerHTML = all.map((c) => `
+      <article class="cake">
+        ${isOwner ? `<button class="cake-del" data-kind="${c.local ? 'local' : 'default'}" data-i="${c.local ? c.localIndex : c.defaultIndex}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
+        <div class="cake-media">
+          ${c.image ? `<img src="${c.image}" alt="${c.name}">` : placeholderIcon()}
+        </div>
+      </article>
+    `).join('');
+
+    grid.querySelectorAll('.cake-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.i);
+        if (btn.dataset.kind === 'local'){
+          localCakes.splice(i, 1);
+          saveLocalCakes(localCakes);
+        } else {
+          // إخفاء الصورة الافتراضية من متصفحك إنت بس - مش هتتشال من النسخة
+          // اللي بيشوفها الزوار غيرك إلا لو طلبتي تعديل الملف الأصلي
+          hiddenDefaults.push(i);
+          saveHiddenDefaults(hiddenDefaults);
+        }
+        render();
+      });
+    });
+  }
+
+  // ---------- modal logic ----------
+  const overlay = document.getElementById('overlay');
+  const fileInput = document.getElementById('fileInput');
+  const filePreview = document.getElementById('filePreview');
+  const previewImg = document.getElementById('previewImg');
+  const dropLabel = document.getElementById('dropLabel');
+  const cakeName = document.getElementById('cakeName');
+  const saveBtn = document.getElementById('saveAdd');
+  let pendingImage = null;
+
+  function resetModal(){
+    pendingImage = null;
+    fileInput.value = '';
+    filePreview.style.display = 'none';
+    dropLabel.textContent = 'دوس هنا أو اسحب صورة التورتة';
+    cakeName.value = '';
+    saveBtn.disabled = true;
+  }
+
+  document.getElementById('openAdd').addEventListener('click', () => {
+    resetModal();
+    overlay.classList.add('open');
+  });
+  document.getElementById('cancelAdd').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      pendingImage = e.target.result;
+      previewImg.src = pendingImage;
+      filePreview.style.display = 'block';
+      dropLabel.textContent = 'تم اختيار الصورة ✓';
+      checkReady();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  cakeName.addEventListener('input', checkReady);
+  function checkReady(){
+    saveBtn.disabled = !(pendingImage && cakeName.value.trim());
+  }
+
+  saveBtn.addEventListener('click', () => {
+    localCakes.push({ name: cakeName.value.trim(), image: pendingImage, local: true });
+    saveLocalCakes(localCakes);
+    overlay.classList.remove('open');
+    render();
+  });
+
+  render();
+</script>
+
+</body>
+</html>
